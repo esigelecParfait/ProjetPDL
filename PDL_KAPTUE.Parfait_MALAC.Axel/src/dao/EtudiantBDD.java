@@ -23,7 +23,7 @@ public class EtudiantBDD extends ConnexionBDD{
 	 * @return
 	 */
 	
-public static  ArrayList<Etudiant> getList(){
+public  ArrayList<Etudiant> getListeEtudiant(){
 	// Objet  qui permet d'etablir une connexion a notre BDD
 	Connection con = null;
 	//Objet pour executer des requetes SQL
@@ -69,7 +69,7 @@ public static  ArrayList<Etudiant> getList(){
 	}
 	return returnValue;
 }
-public int update(Etudiant etudiant ) {
+public int updateEtudiant(Etudiant etudiant ) {
 	Connection con = null;
 	PreparedStatement ps = null;
 	int returnValue = 0;
@@ -129,7 +129,7 @@ public int update(Etudiant etudiant ) {
      * @param supplier
      * @return
      */
-   public int add(Etudiant  etudiant) {
+   public int addEtudiant(Etudiant  etudiant) {
 	Connection con = null;
 	PreparedStatement ps = null;
 	int returnValue = 0;
@@ -182,7 +182,7 @@ public int update(Etudiant etudiant ) {
 	}
 	return returnValue;
 }
-   public Etudiant  get(String id) {
+   public Etudiant  getEtudiant(String id) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

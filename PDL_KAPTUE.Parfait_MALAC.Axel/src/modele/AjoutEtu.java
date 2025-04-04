@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.ConnexionBDD;
+import dao.EtudiantBDD;
 import gui.Etudiant;
 
 import javax.swing.JLabel;
@@ -182,9 +183,10 @@ public class AjoutEtu extends MenuAdministrateur {
 		btnNewButton.setBounds(475, 284, 85, 21);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConnexionBDD aj = new ConnexionBDD();
+				EtudiantBDD aj = new EtudiantBDD();
 				Etudiant etudiant = new Etudiant(identifiant.getText(),nom.getText(),prenom.getText(),password.getText(),date.getText(),Integer.valueOf(classement.getText()),statut.getText(),entreprise.getText(),contrat.getText(),mobilite.getText(),Integer.valueOf(choixfinal.getText()),Integer.valueOf(idpromo.getText()));
-			    aj.add(etudiant);
+			   int b= aj.addEtudiant(etudiant);
+			   System.out.println(b);
 			
 			}
 		});

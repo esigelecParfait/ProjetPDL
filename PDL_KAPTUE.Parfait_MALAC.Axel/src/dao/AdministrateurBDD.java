@@ -29,7 +29,7 @@ import gui.Etudiant;
 * @param admin le fournisseur a ajouter
 * @return retourne le nombre de lignes ajoutees dans la table
 */
-        public static   int add(Administrateur admin) {
+        public   int addAdmin(Administrateur admin) {
           Connection con = null;
           PreparedStatement ps = null;
           int returnValue = 0;
@@ -94,7 +94,7 @@ try {
 * @return 
 * 	
 */
-public static   Administrateur get(String ad_id) {
+public   Administrateur getAdmin(String ad_id) {
 Connection con = null;
 PreparedStatement ps = null;
 ResultSet rs = null;
@@ -177,7 +177,7 @@ return returnValue;
 * @return une ArrayList de fournisseur
 */
 
- public  static ArrayList<Administrateur> getList() {
+ public   ArrayList<Administrateur> getListeAdmin() {
 Connection con = null;
 PreparedStatement ps = null;
 ResultSet rs = null;
@@ -253,14 +253,15 @@ Administrateur ad1 = new Administrateur("Nom de l'admin", "Prenom de l'admin", i
 Administrateur ad2 = new Administrateur("Malac", "Axel", ids[2], "Mdp34+");
 
 // test de la methode add
-returnValue = AdministrateurBDD.add(ad1);
+returnValue = admin.addAdmin(ad1);
 System.out.println(returnValue + " admin ajoute");
-returnValue = AdministrateurBDD.add(ad2);
+returnValue = admin.addAdmin(ad2);
 System.out.println(returnValue + " admin ajoute");
 System.out.println();
 
 // test de la methode get
-Administrateur sg = AdministrateurBDD.get("424242");
+
+Administrateur sg = admin.getAdmin("424242");
 // appel implicite de la methode toString de la classe Object (a eviter)
 System.out.println(sg);
 System.out.println();

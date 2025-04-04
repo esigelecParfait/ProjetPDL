@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.ConnexionBDD;
+import dao.EtudiantBDD;
 import gui.Etudiant;
 
 import javax.swing.JLabel;
@@ -177,8 +178,8 @@ public class AjoutEtudiant extends MenuAdministrateur {
 			public void actionPerformed(ActionEvent e) {
 				if(identifiant.getText().length()> 0) {
 					String id =identifiant.getText();
-					ConnexionBDD rech = new ConnexionBDD();
-					Etudiant e1 = rech.get(id);
+					EtudiantBDD rech = new EtudiantBDD();
+					Etudiant e1 = rech.getEtudiant(id);
 					nom.setText(e1.getNom());
 					Prenm.setText(e1.getPrenom());
 					DateNaissance.setText(e1.getDatedeNaissance());
@@ -207,12 +208,12 @@ public class AjoutEtudiant extends MenuAdministrateur {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String ide =identifiant.getText();
-				ConnexionBDD recup = new ConnexionBDD();
-				Etudiant etu =  recup.get(ide);
+				EtudiantBDD  recup = new EtudiantBDD();
+				Etudiant etu =  recup.getEtudiant(ide);
 				Etudiant etudiant = new Etudiant(ide,nom.getText(),Prenm.getText(), etu.getMdp(),DateNaissance.getText(),Integer.valueOf(Classement.getText()),Statut.getText(),Entreprise.getText(),Contrat.getText(), mobilite.getText(),Integer.valueOf(IdPromo.getText()), Integer.valueOf(ChoixFinal.getText()));
-				ConnexionBDD ajout = new ConnexionBDD();
-				ajout.update(etudiant);
-				
+				EtudiantBDD ajout = new EtudiantBDD();
+				 int c =ajout.updateEtudiant(etudiant);
+				System.out.println(c);
 			}
 			
 		});

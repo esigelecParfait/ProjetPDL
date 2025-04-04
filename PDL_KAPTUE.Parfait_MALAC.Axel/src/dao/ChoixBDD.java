@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import gui.Choix;
-import model.Supplier;
+import gui.Etudiant;
 
 
 public class ChoixBDD extends ConnexionBDD {
@@ -21,7 +21,7 @@ public class ChoixBDD extends ConnexionBDD {
 	 * @param choix
 	 * @return
 	 */
-	public int add(Choix choix) {
+	public int addChoix(Choix choix) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		int returnValue=0;
@@ -65,7 +65,7 @@ public class ChoixBDD extends ConnexionBDD {
 		return returnValue;
 		
 	}
-	public ArrayList<Choix> getList() {
+	public ArrayList<Choix> getListeChoix() {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -107,5 +107,103 @@ public class ChoixBDD extends ConnexionBDD {
 		}
 		return returnValue;
 	}
+	/**
+	 * Method which return the choices by an 
+	 */
+	
+ 
+	public ArrayList <Choix> getChoix(String id) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Choix> returnValue = new ArrayList<Choix>();
 
+		// connexion a la base de donnees
+		try {
+
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("SELECT * FROM choix  WHERE ch_etu_id  = ? ORDER BY ch_priorite ASC");
+			ps.setString(1, id);
+
+			// on execute la requete
+			// rs contient un pointeur situe juste avant la premiere ligne retournee
+			rs = ps.executeQuery();
+			// passe a la premiere (et unique) ligne retournee
+			while (rs.next()) {
+				returnValue.add(new Choix(rs.getInt("ch_dom_id"),
+	                     rs.getString("ch_etu_id"),
+	                     
+	                     rs.getInt("ch_priorite")));
+			}
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		} finally {
+			// fermeture du ResultSet, du PreparedStatement et de la Connexion
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (Exception ignore) {
+			}
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
+	public  ArrayList<Etudiant> getListeEtudiant(){
+		// Objet  qui permet d'etablir une connexion a notre BDD
+		Connection con = null;
+		//Objet pour executer des requetes SQL
+		PreparedStatement ps = null;
+		//Objet qui permet de stocker le resultat des donnees d'une requete SQL
+		ResultSet rs = null;
+		ArrayList<Etudiant> returnValue = new ArrayList<Etudiant>();
+
+		// connexion a la base de donnees
+		try {
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("SELECT * FROM etudiant ");
+
+			// on execute la requete
+			rs = ps.executeQuery();
+			// on parcourt les lignes du resultat
+			
+			while (rs.next()) {
+				returnValue.add(new Etudiant(
+						                     rs.getString("etu_identifiant"),
+						                     rs.getString("etu_mdp"),
+						                     rs.getString("etu_statut")));
+			}
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		} finally {
+			// fermeture du rs, du preparedStatement et de la connexion
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
 }

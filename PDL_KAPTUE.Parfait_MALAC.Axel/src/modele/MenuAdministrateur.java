@@ -9,7 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import dao.ChoixBDD;
 import dao.ConnexionBDD;
+import dao.EtudiantBDD;
 import gui.Choix;
 import gui.Etudiant;
 
@@ -95,15 +97,24 @@ public class MenuAdministrateur {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int m=0;
-				ConnexionBDD stock = new ConnexionBDD();
-				ArrayList<Choix> ch = stock.getList();
-				ArrayList<Etudiant> etudiant = stock.getListe();
+				ChoixBDD stock = new ChoixBDD();
+				ArrayList<Choix> ch = stock.getListeChoix();
+				EtudiantBDD recupetu = new EtudiantBDD();
+				ArrayList<Etudiant> etudiant = recupetu.getListeEtudiant();
 				for (Etudiant etu : etudiant) {
 					//je compte le nombre d'etudiants
 					m++;
 					}
 				System.out.println(m);
-				String tab[][]= new String[m][5];
+				int tab[][]= new int[m][5];
+				for(int i=0 ; i< m ; i++) {
+					String id=etudiant.get(i).getId();
+					ArrayList <Choix>stocker = stock.getChoix(id);
+					
+					for(int j=0 ; j< 5; j++) {
+						tab[i][j]= stocker.get(j).getchoixPriorite();
+					}
+				}
 				
 				
 				

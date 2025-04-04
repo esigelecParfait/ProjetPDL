@@ -17,6 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import dao.AdministrateurBDD;
+import dao.ConnexionBDD;
 import dao.EtudiantBDD;
 import gui.Administrateur;
 import gui.Etudiant;
@@ -111,9 +112,10 @@ public class Application {
         connect.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	
-                ArrayList<Etudiant> etu = EtudiantBDD.getList();
-                ArrayList<Administrateur> admin = AdministrateurBDD.getList();
+            	EtudiantBDD recupetu = new EtudiantBDD();
+                ArrayList<Etudiant> etu = recupetu.getListeEtudiant();
+                AdministrateurBDD recupadmin = new AdministrateurBDD();
+                ArrayList<Administrateur> admin = recupadmin.getListeAdmin();
                 
                 String inputId = ide.getText();
                 String inputMdp = new String(mdpe.getPassword()); 

@@ -58,7 +58,8 @@ public class FenClassique {
 
 	private JPanel createAddPanel() {
 		 JPanel tab  = new JPanel();
-	     ArrayList<Dominante>dom = DominanteBDD.getList();
+		 DominanteBDD recupdom = new DominanteBDD();
+	     ArrayList<Dominante>dom = recupdom.getListDom();
 	     //Colonnes de notre tableau à choix
 	     String[] colonnes = {"Dominante", "Choix 1","Choix 2"};
 

@@ -80,7 +80,8 @@ public class FenEtudiant extends Application {
 	@SuppressWarnings("serial")
 	private JPanel createAddPanel() {
 	     JPanel tab  = new JPanel();
-	     ArrayList<Dominante>dom = DominanteBDD.getList();
+	     DominanteBDD recupdom = new DominanteBDD();
+	     ArrayList<Dominante>dom = recupdom.getListDom();
 	     
 	     //Colonnes de notre tableau à choix
 	     String[] colonnes = {"Dominante", "Choix 1","Choix 2","Choix 3","Choix 4 ","Choix 5"};
@@ -187,7 +188,7 @@ public class FenEtudiant extends Application {
 	        btnAfficher.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	            	
-	            	ConnexionBDD aj = new ConnexionBDD();
+	            	ChoixBDD aj = new ChoixBDD();
 	            	
 	                StringBuilder result = new StringBuilder("Options sélectionnées :\n");
 	                for(int j = 1 ; j < model.getColumnCount();j++) {
@@ -199,8 +200,8 @@ public class FenEtudiant extends Application {
 	                    	System.out.println(idEtudiant);
 	          
 	                    	Choix choix = new Choix(dom.get(i).getidDom(),idEtudiant,j);
-	                      int  a= aj.add(choix);
-	                    	
+	                      int  d= aj.addChoix(choix);
+	                    	System.out.println(d);
 	                    	
 	                    	
 	                        result.append(model.getValueAt(i, 0)).append("\n");

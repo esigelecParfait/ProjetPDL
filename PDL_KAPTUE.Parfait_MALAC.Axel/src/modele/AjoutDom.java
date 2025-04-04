@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import dao.ConnexionBDD;
+import dao.DominanteBDD;
 import gui.Dominante;
 
 public class AjoutDom {
@@ -102,9 +103,10 @@ public class AjoutDom {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ConnexionBDD aj = new ConnexionBDD();
+				DominanteBDD aj = new DominanteBDD();
 				Dominante dominante = new Dominante(Integer.valueOf(domidd.getText()),domnomm.getText(),domacrr.getText(),Integer.valueOf(domnbb.getText()),Integer.valueOf(dominbaa.getText()),Integer.valueOf(domdepp.getText()));
-				aj.add(dominante);
+				int a=aj.addDom(dominante);
+			System.out.println(a);
 			}
 			
 		});
