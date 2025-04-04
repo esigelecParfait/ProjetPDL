@@ -11,278 +11,302 @@ import gui.Administrateur;
 import gui.Etudiant;
 
 
-    public class AdministrateurBDD extends ConnexionBDD {
+public class AdministrateurBDD extends ConnexionBDD {
 
-/**
- * Constructeur
- * 
- */
-   public AdministrateurBDD() {
-     super();
-}
-
-
-/**
-* Permet d'ajouter un administrateur dans la table admin.
-* Le mode est auto-commit par defaut : chaque insertion est validee
-* 
-* @param admin le fournisseur a ajouter
-* @return retourne le nombre de lignes ajoutees dans la table
-*/
-        public   int addAdmin(Administrateur admin) {
-          Connection con = null;
-          PreparedStatement ps = null;
-          int returnValue = 0;
-
-    // connexion à la BDD
-          try {
-
-    // tentative de connexion
-   con = DriverManager.getConnection(URL, LOGIN, PASS);
-   // preparation de l'instruction SQL, chaque ? represente une valeur
-   // a communiquer dans l'insertion.
-   // les getters permettent de recuperer les valeurs des attributs souhaites
-  ps = con.prepareStatement("INSERT INTO admin(ad_id, ad_nom, ad_prenom, ad_mdp) VALUES(?, ?, ?, ?)");
-  ps.setString(1, admin.getId());
-  ps.setString(2, admin.getNom());
-  ps.setString(3, admin.getPrenom());
- ps.setString(4, admin.getMdp());
-
-// Execution de la requete
-  returnValue = ps.executeUpdate();
-
-} catch (Exception e) {
-if (e.getMessage().contains("ORA-00001"))
-System.out.println("Cet identifiant admin existe déjà. Ajout impossible !");
-else
-e.printStackTrace();
-} finally {
-// fermeture du preparedStatement et de la connexion
-try {
-
-	if (ps != null) {
-
-		ps.close();
-
-	}
-} catch (Exception ignore) {
-
-}
-
-try {
-
-	if (con != null) {
-
-		con.close();
-
+	/**
+	 * Constructeur
+	 * 
+	 */
+	public AdministrateurBDD() {
+		super();
 	}
 
-} catch (Exception ignore) {
 
-}
+	/**
+	 * Permet d'ajouter un administrateur dans la table admin.
+	 * Le mode est auto-commit par defaut : chaque insertion est validee
+	 * 
+	 * @param admin le fournisseur a ajouter
+	 * @return retourne le nombre de lignes ajoutees dans la table
+	 */
+	public   int addAdmin(Administrateur admin) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		int returnValue = 0;
 
-}
+		// connexion à la BDD
+		try {
 
-          return returnValue;
-}
+			// tentative de connexion
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			// preparation de l'instruction SQL, chaque ? represente une valeur
+			// a communiquer dans l'insertion.
+			// les getters permettent de recuperer les valeurs des attributs souhaites
+			ps = con.prepareStatement("INSERT INTO admin(ad_id, ad_nom, ad_prenom, ad_mdp) VALUES(?, ?, ?, ?)");
+			ps.setString(1, admin.getId());
+			ps.setString(2, admin.getNom());
+			ps.setString(3, admin.getPrenom());
+			ps.setString(4, admin.getMdp());
 
+			// Execution de la requete
+			returnValue = ps.executeUpdate();
 
-/**
-* Permet de recuperer un 
-* 
-* @param 
-* @return 
-* 	
-*/
-public   Administrateur getAdmin(String ad_id) {
-Connection con = null;
-PreparedStatement ps = null;
-ResultSet rs = null;
-Administrateur returnValue = null;
+		} catch (Exception e) {
+			if (e.getMessage().contains("ORA-00001"))
+				System.out.println("Cet identifiant admin existe déjà. Ajout impossible !");
+			else
+				e.printStackTrace();
+		} finally {
+			// fermeture du preparedStatement et de la connexion
+			try {
 
-// connexion a la base de donnees
-try {
-	con = DriverManager.getConnection(URL, LOGIN, PASS);
+				if (ps != null) {
 
-	ps = con.prepareStatement("SELECT * FROM admin WHERE ad_id = ?");
+					ps.close();
 
-	ps.setString(1, ad_id);
+				}
+			} catch (Exception ignore) {
 
+			}
 
-	// on execute la requete
+			try {
 
-	// rs contient un pointeur situe juste avant la premiere ligne retournee
+				if (con != null) {
 
-	rs = ps.executeQuery();
+					con.close();
 
-	// passe a la premiere (et unique) ligne retournee
+				}
 
-	if (rs.next()) {
+			} catch (Exception ignore) {
 
-		returnValue = new Administrateur(null, null, rs.getString("AD_ID"), rs.getString("AD_MDP"));
-
-	}
-
-} catch (Exception ee) {
-
-	ee.printStackTrace();
-
-} finally {
-
-	// fermeture du ResultSet, du PreparedStatement et de la Connexion
-
-	try {
-
-		if (rs != null) {
-
-			rs.close();
+			}
 
 		}
 
-	} catch (Exception ignore) {
-
+		return returnValue;
 	}
 
-	try {
 
-		if (ps != null) {
+	/**
+	 * Permet de recuperer un 
+	 * 
+	 * @param 
+	 * @return 
+	 * 	
+	 */
+	public   Administrateur getAdmin(String ad_id) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Administrateur returnValue = null;
 
-			ps.close();
+		// connexion a la base de donnees
+		try {
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
 
+			ps = con.prepareStatement("SELECT * FROM admin WHERE ad_id = ?");
+
+			ps.setString(1, ad_id);
+
+
+			// on execute la requete
+
+			// rs contient un pointeur situe juste avant la premiere ligne retournee
+
+			rs = ps.executeQuery();
+
+			// passe a la premiere (et unique) ligne retournee
+
+			if (rs.next()) {
+
+				returnValue = new Administrateur(null, null, rs.getString("AD_ID"), rs.getString("AD_MDP"));
+
+			}
+
+		} catch (Exception ee) {
+
+			ee.printStackTrace();
+
+		} finally {
+
+			// fermeture du ResultSet, du PreparedStatement et de la Connexion
+
+			try {
+
+				if (rs != null) {
+
+					rs.close();
+
+				}
+
+			} catch (Exception ignore) {
+
+			}
+
+			try {
+
+				if (ps != null) {
+
+					ps.close();
+
+				}
+
+			} catch (Exception ignore) {
+
+			}
+
+			try {
+
+				if (con != null) {
+
+					con.close();
+
+				}
+
+			} catch (Exception ignore) {
+
+			}
+		}
+		return returnValue;
+	}
+
+
+	/**
+	 * Permet de recuperer tous les administrateurs  stockes dans la table admin
+	 * 
+	 * @return une ArrayList de fournisseur
+	 */
+
+	public   ArrayList<Administrateur> getListeAdmin() {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Administrateur> returnValue = new ArrayList<Administrateur>();
+
+		// connexion a la base de donnees
+
+		try {
+
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+
+			ps = con.prepareStatement("SELECT * FROM admin ORDER BY ad_id");
+
+			// on execute la requete
+
+			rs = ps.executeQuery();
+			// on parcourt les lignes du resultat
+
+			while (rs.next()) {
+
+				returnValue.add(new Administrateur(null, null, rs.getString("AD_ID"), rs.getString("AD_MDP")));
+
+			}
+
+		} catch (Exception ee) {
+
+			ee.printStackTrace();
+
+		} finally {
+			// fermeture du rs, du preparedStatement et de la connexion
+
+			try {
+
+				if (rs != null)
+
+					rs.close();
+
+			} catch (Exception ignore) {
+
+			}
+
+			try {
+
+				if (ps != null)
+
+					ps.close();
+
+			} catch (Exception ignore) {
+			}
+
+			try {
+
+				if (con != null)
+
+					con.close();
+
+			} catch (Exception ignore) {
+
+			}
 		}
 
-	} catch (Exception ignore) {
-
+		return returnValue;
 	}
 
-	try {
 
-		if (con != null) {
+	public static void main(String[] args) throws SQLException {
+		int returnValue;
+		AdministrateurBDD admin = new AdministrateurBDD();
+		// Ce test va utiliser directement votre BDD, on essaie d'éviter les collisions avec vos données en prenant de grands ID
+		String[] ids = {"jeandupont1", "424242", "idid"};
+		// test du constructeur
+		Administrateur ad1 = new Administrateur("Nom de l'admin", "Prenom de l'admin", ids[1], "mdp de l'admin");
+		Administrateur ad2 = new Administrateur("Malac", "Axel", ids[2], "Mdp34+");
 
-			con.close();
+		// test de la methode add
+		returnValue = admin.addAdmin(ad1);
+		System.out.println(returnValue + " admin ajoute");
+		returnValue = admin.addAdmin(ad2);
+		System.out.println(returnValue + " admin ajoute");
+		System.out.println();
 
+		// test de la methode get
+
+		Administrateur sg = admin.getAdmin("424242");
+		// appel implicite de la methode toString de la classe Object (a eviter)
+		System.out.println(sg);
+		System.out.println();
+
+		// test de la methode get list
+		ArrayList<Administrateur> list = new ArrayList<Administrateur>();
+		for (Administrateur ad : list) {
+			// appel explicite de la methode toString de la classe Object (a privilegier)
+			System.out.println(ad.toString());
 		}
 
-	} catch (Exception ignore) {
 
 	}
-}
-return returnValue;
-}
-
 
 /**
-* Permet de recuperer tous les administrateurs  stockes dans la table admin
-* 
-* @return une ArrayList de fournisseur
-*/
-
- public   ArrayList<Administrateur> getListeAdmin() {
-Connection con = null;
-PreparedStatement ps = null;
-ResultSet rs = null;
-ArrayList<Administrateur> returnValue = new ArrayList<Administrateur>();
-
-// connexion a la base de donnees
-
-try {
-
-	con = DriverManager.getConnection(URL, LOGIN, PASS);
-
-	ps = con.prepareStatement("SELECT * FROM admin ORDER BY ad_id");
-
-// on execute la requete
-
-	rs = ps.executeQuery();
-// on parcourt les lignes du resultat
-
-	while (rs.next()) {
-
-		returnValue.add(new Administrateur(null, null, rs.getString("AD_ID"), rs.getString("AD_MDP")));
-
-	}
-
-} catch (Exception ee) {
-
-	ee.printStackTrace();
-
-} finally {
-// fermeture du rs, du preparedStatement et de la connexion
-
-	try {
-
-		if (rs != null)
-
-			rs.close();
-
-	} catch (Exception ignore) {
-
-	}
-
-	try {
-
-		if (ps != null)
-
-			ps.close();
-
-	} catch (Exception ignore) {
-}
-
-	try {
-
-		if (con != null)
-
-			con.close();
-
-	} catch (Exception ignore) {
-
-	}
-}
-
-return returnValue;
-}
-
-
-public static void main(String[] args) throws SQLException {
- int returnValue;
-AdministrateurBDD admin = new AdministrateurBDD();
-// Ce test va utiliser directement votre BDD, on essaie d'éviter les collisions avec vos données en prenant de grands ID
-String[] ids = {"jeandupont1", "424242", "idid"};
-// test du constructeur
-Administrateur ad1 = new Administrateur("Nom de l'admin", "Prenom de l'admin", ids[1], "mdp de l'admin");
-Administrateur ad2 = new Administrateur("Malac", "Axel", ids[2], "Mdp34+");
-
-// test de la methode add
-returnValue = admin.addAdmin(ad1);
-System.out.println(returnValue + " admin ajoute");
-returnValue = admin.addAdmin(ad2);
-System.out.println(returnValue + " admin ajoute");
-System.out.println();
-
-// test de la methode get
-
-Administrateur sg = admin.getAdmin("424242");
-// appel implicite de la methode toString de la classe Object (a eviter)
-System.out.println(sg);
-System.out.println();
-
-// test de la methode get list
-ArrayList<Administrateur> list = new ArrayList<Administrateur>();
-for (Administrateur ad : list) {
-// appel explicite de la methode toString de la classe Object (a privilegier)
-System.out.println(ad.toString());
-}
-
-
-}
-/**
- * Methode qui permet de modifier les elements d un etudiant
- * @param etudiant
+ * Methode qui permet de modifier le mot de passe d'un admin
  * @return
  */
+public static boolean update(Administrateur admin) {
+	Connection conn = null;
+	PreparedStatement ps = null;
+	boolean isValid = false;
+	ResultSet rs = null;
 
+	try {
+		conn = DriverManager.getConnection(URL, LOGIN, PASS);
+		ps = conn.prepareStatement("UPDATE admin SET ad_mdp = ? where ad_id = ?");
+		ps.setString(1, admin.getMdp());
+		ps.setString(2, admin.getId());
+		rs = ps.executeQuery();
+		if (rs.next()) {
+			isValid = true; 
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	} finally {
+		try {
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();
+			if (conn != null) conn.close();
+		} catch (Exception ignore) {
+		}
+	}
+	return isValid;
 
 
 }
-
-
+}
