@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import gui.Choix;
@@ -38,7 +39,8 @@ public class ChoixBDD extends ConnexionBDD {
 			ps.setInt(1, choix.getdomId());
 			ps.setString(2, choix.getId());
 			ps.setInt(3, choix.getchoixPriorite());
-
+            System.out.println(choix.getdomId());
+            System.out.println(choix.getId());
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
 
@@ -199,11 +201,20 @@ public class ChoixBDD extends ConnexionBDD {
 			} catch (Exception ignore) {
 			}
 			try {
-				if (con != null)
+			if (con != null)
 					con.close();
 			} catch (Exception ignore) {
 			}
 		}
 		return returnValue;
 	}
+	public static void main(String[] args) throws SQLException {
+		int returnValue;
+		ChoixBDD choix = new  ChoixBDD();
+		Choix ch1= new Choix(1,"emma5",1);
+		returnValue = choix.addChoix(ch1);
+		System.out.println(returnValue);
+		
+	}
 }
+

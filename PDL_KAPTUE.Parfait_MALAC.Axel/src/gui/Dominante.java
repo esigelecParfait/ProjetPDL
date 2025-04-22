@@ -13,7 +13,7 @@ public class Dominante {
 	    private ArrayList<Etudiant>listeEtudiantsInscrits;
 
 	    
-	    public Dominante(int idDom,String nom, String acronyme, int departement, int nbPlaces,int nbPlacesApprenti) {
+	    public Dominante(int idDom,String nom, String acronyme, int nbPlaces,int nbPlacesApprenti,int departement) {
 	    	this.idDom = idDom;
 	        this.nom = nom;
 	        this.acronyme = acronyme;
@@ -22,7 +22,8 @@ public class Dominante {
 	        this.nbPlacesApprenti = nbPlacesApprenti;
 	       
 	    }
-	    public Dominante(String nom,int nbPlaces) {
+	    public Dominante(int idDom,String nom,int nbPlaces) {
+	    	this.idDom = idDom;
 	    	this.nom = nom;
 	    	this.nbPlaces = nbPlaces;
 	    }

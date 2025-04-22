@@ -49,7 +49,7 @@ public class Etudiant {
 	        this.promo = promo;
 	        this.identifiantpromo = identifiantpromo;
 	        this.choixfinal = choixfinal;
-	        this.listeDominantesChoisies = new ArrayList<>();
+	        this.Dominante = new ArrayList<>();
 	        
 	    }
 	    public Etudiant(String identifiant,String nom, String prenom,String mdp, String dateDeNaissance,int classement1A,String statut,String contrat,String entreprise,String mobilite,int identifiantpromo,int choixfinal) {
@@ -91,9 +91,7 @@ public class Etudiant {
 	        System.out.println("Date de Naissance: " + dateDeNaissance);
 	        System.out.println("Classement 1A: " + classement1A);
 	        System.out.println("Identifiant: " + identifiant);
-	        for(int i=0; i< listeDominantesChoisies.size(); i++) {
-	        	
-	        }
+	        
 	    }
 
 	    public String getDatedeNaissance() {
@@ -168,7 +166,7 @@ public class Etudiant {
 	    	return promo;
 	    }
 	    public ArrayList<Dominante> getDominante(){
-	    	return listeDominantesChoisies;
+	    	return Dominante;
 	    }
 
 	    /**

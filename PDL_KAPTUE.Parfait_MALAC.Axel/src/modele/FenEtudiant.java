@@ -189,7 +189,8 @@ public class FenEtudiant extends Application {
 	            public void actionPerformed(ActionEvent e) {
 	            	
 	            	ChoixBDD aj = new ChoixBDD();
-	            	
+	            	DominanteBDD dominante = new DominanteBDD();
+	            	ArrayList<Dominante>domi= dominante.getListDom();
 	                StringBuilder result = new StringBuilder("Options sélectionnées :\n");
 	                for(int j = 1 ; j < model.getColumnCount();j++) {
 	                for (int i = 0; i < model.getRowCount(); i++) {
@@ -198,9 +199,11 @@ public class FenEtudiant extends Application {
 	                    //Si l'etudiant a choisi cette domminance en choix j 
 	                    if (isSelected) {
 	                    	System.out.println(idEtudiant);
+	                    	System.out.println(domi.get(i).getidDom());
+	                    	System.out.println(j);
 	          
 	                    	Choix choix = new Choix(dom.get(i).getidDom(),idEtudiant,j);
-	                      int  d= aj.addChoix(choix);
+	                         int  d= aj.addChoix(choix);
 	                    	System.out.println(d);
 	                    	
 	                    	

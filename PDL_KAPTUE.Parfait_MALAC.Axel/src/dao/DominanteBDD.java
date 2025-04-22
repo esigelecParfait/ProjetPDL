@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import gui.Dominante;
+import gui.Etudiant;
 
 public class DominanteBDD extends ConnexionBDD{
 	public DominanteBDD() { 
@@ -46,7 +48,7 @@ public class DominanteBDD extends ConnexionBDD{
 
 			      while (rs.next()) {  
 			    	  
-			    	  returnValue.add(new Dominante(rs.getString("dom_nom"), rs.getInt("dom_nb_places"))); 
+			    	  returnValue.add(new Dominante(rs.getInt("dom_id"),rs.getString("dom_nom"),rs.getString("dom_accronyme")  ,rs.getInt("dom_nb_places"), rs.getInt("dom_nb_places_apprentis"),rs.getInt("dom_departement_id"))); 
 } 
 
 	} catch (Exception ee) {  
@@ -89,7 +91,62 @@ public class DominanteBDD extends ConnexionBDD{
 
 	        return returnValue;  
 
-	 }  
+	 } 
+	 public Dominante getDom(int id) {
+			Connection con = null;
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			Dominante  returnValue = null;
+
+			// connexion a la base de donnees
+			try {
+
+				con = DriverManager.getConnection(URL, LOGIN, PASS);
+				ps = con.prepareStatement("SELECT * FROM dominante WHERE dom_id  = ?");
+				ps.setInt(1, id);
+
+				// on execute la requete
+				// rs contient un pointeur situe juste avant la premiere ligne retournee
+				rs = ps.executeQuery();
+				// passe a la premiere (et unique) ligne retournee
+				if (rs.next()) {
+					returnValue = new Dominante(rs.getInt("dom_id"),
+						       rs.getString("dom_nom"),
+						       rs.getString("dom_accronyme"),
+						       rs.getInt("dom_nb_places"),
+						       rs.getInt("dom_nb_places_apprentis"),
+						       rs.getInt("dom_departement_id"));
+				}
+			} catch (Exception ee) {
+				ee.printStackTrace();
+			} finally {
+				// fermeture du ResultSet, du PreparedStatement et de la Connexion
+				try {
+					if (rs != null) {
+						rs.close();
+					}
+				} catch (Exception ignore) {
+				}
+				try {
+					if (ps != null) {
+						ps.close();
+					}
+				} catch (Exception ignore) {
+				}
+				try {
+					if (con != null) {
+						con.close();
+					}
+				} catch (Exception ignore) {
+				}
+			}
+			return returnValue;
+		}
+	 /**
+	  * 
+	  * @param dom
+	  * @return
+	  */
 	 public int addDom(Dominante dom) {
 			Connection con = null;
 			PreparedStatement ps = null;
@@ -138,6 +195,98 @@ public class DominanteBDD extends ConnexionBDD{
 			}
 			return returnValue;
 		}
+	 public int delete(String id) {
+			Connection con = null;
+			PreparedStatement ps = null;
+			int returnValue = 0;
+
+			// connexion a la base de donnees
+			try {
+
+				// tentative de connexion
+				con = DriverManager.getConnection(URL, LOGIN, PASS);
+				// preparation de l'instruction SQL, le ? represente la valeur de l'ID
+				// a communiquer dans la suppression.
+				// le getter permet de recuperer la valeur de l'ID du fournisseur
+				ps = con.prepareStatement("DELETE FROM dominante WHERE dom_id = ?");
+				ps.setString(1, id);
+
+				// Execution de la requete
+				returnValue = ps.executeUpdate();
+
+			} catch (Exception e) {
+				if (e.getMessage().contains("ORA-02292"))
+					System.out.println("Ce fournisseur possede des articles, suppression impossible !"
+							         + " Supprimer d'abord ses articles ou utiiser la méthode de suppression avec articles.");
+				else
+					e.printStackTrace();
+			} finally {
+				// fermeture du preparedStatement et de la connexion
+				try {
+					if (ps != null) {
+						ps.close();
+					}
+				} catch (Exception ignore) {
+				}
+				try {
+					if (con != null) {
+						con.close();
+					}
+				} catch (Exception ignore) {
+				}
+			}
+			return returnValue;
+		}
+	 public int updateNbPlaces(Dominante dom) {
+		   Connection con = null;
+			PreparedStatement ps = null;
+			int returnValue = 0;
+
+			// connexion a la base de donnees
+			try {
+
+				// tentative de connexion
+				con = DriverManager.getConnection(URL, LOGIN, PASS);
+				// preparation de l'instruction SQL, chaque ? represente une valeur
+				// a communiquer dans la modification.
+				// les getters permettent de recuperer les valeurs des attributs souhaites
+				ps = con.prepareStatement("UPDATE dominante  set dom_nb_places  = ? WHERE dom_id = ?");
+				ps.setInt(1, dom.getNbPlaces());
+				ps.setInt(2, dom.getidDom());
+				
+				
+				
+				
+				
+
+				// Execution de la requete
+				returnValue = ps.executeUpdate();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				// fermeture du preparedStatement et de la connexion
+				try {
+					if (ps != null) {
+						ps.close();
+					}
+				} catch (Exception ignore) {
+				}
+				try {
+					if (con != null) {
+						con.close();
+					}
+				} catch (Exception ignore) {
+				}
+			}
+			return returnValue;
+		}
+
+	 public static void main(String[] args) throws SQLException{
+		 DominanteBDD dominante = new DominanteBDD();
+		 ArrayList<Dominante>dom = dominante.getListDom();
+		 
+	 }
 	}  
 
 	 
