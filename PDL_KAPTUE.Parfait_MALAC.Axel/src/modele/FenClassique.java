@@ -14,13 +14,17 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dao.ChoixBDD;
 import dao.DominanteBDD;
+import gui.Choix;
 import gui.Dominante;
 
 public class FenClassique {
 
 	 JFrame frame;
 	private DefaultTableModel model;
+
+	private String idEtudiant;
 
 	/**
 	 * Launch the application.
@@ -36,6 +40,11 @@ public class FenClassique {
 				}
 			}
 		});
+	}
+	public FenClassique(String idEtudiant) {
+		this.idEtudiant = idEtudiant;
+		System.out.println(idEtudiant);
+		initialize();
 	}
 
 	/**
@@ -65,20 +74,19 @@ public class FenClassique {
 
 	        //Lignes de notre tableau à choix
 	        Object[][]donnees = {
-	            {dom.get(0).getAcronyme(), false,false},
-	            {dom.get(1).getAcronyme(), false,false},
-	            {"Cybersécurité des Réseaux et de l’IOT", false,false},
-	            {"Big Data pour la Transformation Numérique", false,false},
-	            {"Ingénieur d’Affaires : Informatique et Réseaux", false,false},
-	            {"Ingénierie des Services du Numérique", false,false},
-	            {"Ingénieur Finance", false,false,false,false,false},
-	            {"Digitalisation, Automatisation, Robotique et Intelligence Artificielle pour l’industrie", false,false},
-	            {"Énergie et Développement Durable", false,false},
-	            {"Génie Électrique et Transport", false,false},
-	            {"Ingénieur d’Affaires : Distribution Énergie et Signaux", false,false},
-	            {"Mécatronique et Systèmes Embarqués", false,false},
-	            {"Ingénierie des Systèmes Embarqués Mobiles Autonomes et Connectés", false,false},
-	            {"Electronique des Systèmes pour l’Automobile et l’Aéronautique", false,false},
+	        		{dom.get(0).getNom(), false,false},
+		            {dom.get(1).getNom(), false,false},
+		            {dom.get(2).getNom(), false,false},
+		            {dom.get(3).getNom(), false,false},
+		            {dom.get(4).getNom(), false,false},
+		            {dom.get(5).getNom(), false,false},
+		            {dom.get(6).getNom(), false,false},
+		            {dom.get(7).getNom(), false,false},
+		            {dom.get(8).getNom(), false,false},
+		            {dom.get(9).getNom(), false,false},
+		            {dom.get(10).getNom(), false,false},
+		            {dom.get(11).getNom(), false,false},
+		            {dom.get(12).getNom(), false,false},
 	            
 	            
 	        };
@@ -155,16 +163,41 @@ public class FenClassique {
 	       });
 
 	        // Bouton pour afficher les options sélectionnées
-	        JButton btnAfficher = new JButton("Valider");
-	        btnAfficher.setBounds(198, 232, 65, 21);
+	       JButton btnAfficher = new JButton("Valider");
+	        btnAfficher.setBounds(271, 298, 65, 21);
 	        btnAfficher.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
+	            	int cpt=0;
+	            	ChoixBDD aj = new ChoixBDD();
+	            	DominanteBDD dominante = new DominanteBDD();
+	            	ArrayList<Dominante>domi= dominante.getListDom();
+	            	System.out.println(domi.size());
 	                StringBuilder result = new StringBuilder("Options sélectionnées :\n");
+	                for(int j = 1 ; j < model.getColumnCount();j++) {
 	                for (int i = 0; i < model.getRowCount(); i++) {
-	                    boolean isSelected = (boolean) model.getValueAt(i, 1);
+	                	//Recupere les choix
+	                    boolean isSelected = (boolean) model.getValueAt(i, j);
+	                    //Si l'etudiant a choisi cette domminance en choix j 
 	                    if (isSelected) {
+	                    	System.out.println(" L id de l etudiant vaut " +idEtudiant);
+	                    	System.out.println("Sa dominante choisie est " +domi.get(i).getidDom());
+	                    	System.out.println("Son choix numero " +j);
+	          
+	                    	Choix choix = new Choix(dom.get(i).getidDom(),idEtudiant,j);
+	                         int  d= aj.addChoix(choix);
+	                    	System.out.println(d);
+	                    	cpt++;
+	                    	
+	                    	
 	                        result.append(model.getValueAt(i, 0)).append("\n");
 	                    }
+	                }
+	                //JOptionPane.showMessageDialog(null, result.toString());
+	            }
+	                if(cpt != 2) {
+	                	JOptionPane.showMessageDialog(null,	"Veuillez sélectionner 5 choix ");
+	                	aj.delete(idEtudiant);
+	                	
 	                }
 	                JOptionPane.showMessageDialog(null, result.toString());
 	            }

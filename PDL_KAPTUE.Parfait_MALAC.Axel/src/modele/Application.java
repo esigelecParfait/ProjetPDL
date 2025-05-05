@@ -135,10 +135,12 @@ public class Application {
                         
                         
                     }
-                    	if(etudiant.getStatut().equals("Apprentis")) {
+                    	if(etudiant.getStatut().equals("Apprenti")) {
                     		frame.setVisible(false);
-                    		MenuClass feneclassique = new MenuClass();
+                    		MenuClass feneclassique = new MenuClass(inputId);
+                    		System.out.println(inputId);
                     		feneclassique.frame.setVisible(true);
+                    		idEtudiant = inputId;
                     		return;
                     	}
                     

@@ -3,10 +3,13 @@ package modele;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.ParseException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 import dao.ConnexionBDD;
 import dao.EtudiantBDD;
@@ -15,6 +18,8 @@ import gui.Etudiant;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 
 public class AjoutEtu extends MenuAdministrateur {
 
@@ -107,11 +112,24 @@ public class AjoutEtu extends MenuAdministrateur {
 		lblNewLabel_2.setBounds(10, 166, 75, 13);
 		ajout.add(lblNewLabel_2);
 		
-		date = new JTextField();
+		 date = new JFormattedTextField();
 		date.setBounds(20, 234, 96, 19);
-		ajout.add(date);
 		date.setColumns(10);
 		
+			MaskFormatter dateFormatter;
+			try {
+			    MaskFormatter dateFormatter1 = new MaskFormatter("##/##/####");
+			    dateFormatter1.setPlaceholderCharacter('_');
+			    date = new JFormattedTextField(dateFormatter1);
+			    date.setBounds(20, 234, 96, 19);
+			    date.setColumns(10);
+			    ajout.add(date); // Ajout ici après avoir bien instancié
+			} catch (ParseException e) {
+			    e.printStackTrace();
+			}
+			
+
+		ajout.add(date);
 		JLabel lblNewLabel_3 = new JLabel("Date de Naissance");
 		lblNewLabel_3.setBounds(10, 211, 75, 13);
 		ajout.add(lblNewLabel_3);
@@ -125,10 +143,11 @@ public class AjoutEtu extends MenuAdministrateur {
 		lblNewLabel_4.setBounds(10, 262, 45, 13);
 		ajout.add(lblNewLabel_4);
 		
-		statut = new JTextField();
+		String[] options = {" Classique", "Apprenti"};
+        JComboBox<String> statut = new JComboBox<>(options);
 		statut.setBounds(203, 48, 96, 19);
 		ajout.add(statut);
-		statut.setColumns(10);
+		
 		
 		JLabel lblNewLabel_5 = new JLabel("Statut");
 		lblNewLabel_5.setBounds(200, 34, 45, 13);
@@ -184,7 +203,8 @@ public class AjoutEtu extends MenuAdministrateur {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				EtudiantBDD aj = new EtudiantBDD();
-				Etudiant etudiant = new Etudiant(identifiant.getText(),nom.getText(),prenom.getText(),password.getText(),date.getText(),Integer.valueOf(classement.getText()),statut.getText(),entreprise.getText(),contrat.getText(),mobilite.getText(),Integer.valueOf(choixfinal.getText()),Integer.valueOf(idpromo.getText()));
+				Etudiant etudiant = new Etudiant(identifiant.getText(),nom.getText(),prenom.getText(),password.getText(),date.getText(),Integer.valueOf(classement.getText()),(String) statut.getSelectedItem(),entreprise.getText(),contrat.getText(),mobilite.getText(),Integer.valueOf(choixfinal.getText()),Integer.valueOf(idpromo.getText()));
+				
 			   int b= aj.addEtudiant(etudiant);
 			   System.out.println(b);
 			

@@ -184,13 +184,14 @@ public class FenEtudiant extends Application {
 
 	        // Bouton qui va permettre de stocker les choix des etudiants dans la BDD
 	        JButton btnAfficher = new JButton("Valider");
-	        btnAfficher.setBounds(271, 298, 65, 21);
+	        btnAfficher.setBounds(271, 298, 92, 21);
 	        btnAfficher.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	            	
+	            	int cpt =0;
 	            	ChoixBDD aj = new ChoixBDD();
 	            	DominanteBDD dominante = new DominanteBDD();
 	            	ArrayList<Dominante>domi= dominante.getListDom();
+	            	System.out.println(domi.size());
 	                StringBuilder result = new StringBuilder("Options sélectionnées :\n");
 	                for(int j = 1 ; j < model.getColumnCount();j++) {
 	                for (int i = 0; i < model.getRowCount(); i++) {
@@ -205,14 +206,22 @@ public class FenEtudiant extends Application {
 	                    	Choix choix = new Choix(dom.get(i).getidDom(),idEtudiant,j);
 	                         int  d= aj.addChoix(choix);
 	                    	System.out.println(d);
+	                    	cpt++;
+	                    	
+	                  
 	                    	
 	                    	
 	                        result.append(model.getValueAt(i, 0)).append("\n");
 	                    }
 	                }
-	                //JOptionPane.showMessageDialog(null, result.toString());
+	                
 	            }
 	                JOptionPane.showMessageDialog(null, result.toString());
+	                if(cpt != 5) {
+	                	JOptionPane.showMessageDialog(null,	"Veuillez sélectionner 5 choix ");
+	                	aj.delete(idEtudiant);
+	                	
+	                }
 	            }
 	        });
 	        tab.setLayout(null);

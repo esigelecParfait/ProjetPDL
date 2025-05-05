@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -84,11 +85,13 @@ public int updateEtudiant(Etudiant etudiant ) {
 		// preparation de l'instruction SQL, chaque ? represente une valeur
 		// a communiquer dans la modification.
 		// les getters permettent de recuperer les valeurs des attributs souhaites
-		ps = con.prepareStatement("UPDATE etudiant  set  etu_nom = ?, etu_prenom = ?, etu_mdp =?, etu_date_naissance = ? , etu_classement = ?,etu_statut = ?, etu_entreprise = ?,etu_cotrat = ?, etu_mobilite = ?,etu_choix_final_id = ?, etu_id_promo= ?, WHERE etu_identifiant = ?");
-		ps.setString(12, etudiant .getId());
+		ps = con.prepareStatement("UPDATE etudiant  set  etu_nom = ?, etu_prenom = ?, etu_mdp =?, etu_date_naissance =  ? , etu_classement = ?,etu_statut = ?, etu_entreprise = ?,etu_contrat = ?, etu_mobilite = ?,etu_choix_final_id = ?, etu_promo= ? WHERE etu_identifiant = ?");
+		
+		ps.setString(12, etudiant.getId());
 		ps.setString(1, etudiant.getNom());
 		ps.setString(2, etudiant.getPrenom());
 		ps.setString(3, etudiant.getMdp());
+
 		ps.setString(4, etudiant.getDatedeNaissance());
 		ps.setInt(5, etudiant.getClassement());
 		ps.setString(6, etudiant.getStatut());
@@ -140,22 +143,15 @@ public int addEtudiant(Etudiant etudiant) {
         con = DriverManager.getConnection(URL, LOGIN, PASS);
 
         ps = con.prepareStatement("INSERT INTO etudiant (etu_identifiant, etu_nom, etu_prenom, etu_mdp, etu_date_naissance, etu_classement, etu_statut, etu_entreprise, etu_contrat, etu_mobilite, etu_choix_final_id, etu_promo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
+        String dateStr = etudiant.getDatedeNaissance();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        java.util.Date utilDate = formatter.parse(dateStr);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         ps.setString(1, etudiant.getId());
         ps.setString(2, etudiant.getNom());
         ps.setString(3, etudiant.getPrenom());
         ps.setString(4, etudiant.getMdp());
-
-        String dateStr = etudiant.getDatedeNaissance(); // exemple : "2000-01-15"
-        if (dateStr != null && !dateStr.isEmpty()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date utilDate = formatter.parse(dateStr);
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-            ps.setDate(5, sqlDate);
-        } else {
-            ps.setNull(5, java.sql.Types.DATE);
-        }
-
+		ps.setDate(5, sqlDate);
         ps.setInt(6, etudiant.getClassement());
         ps.setString(7, etudiant.getStatut());
         ps.setString(8, etudiant.getEntreprise());
@@ -209,8 +205,8 @@ public int addEtudiant(Etudiant etudiant) {
 					       rs.getString("etu_entreprise"),
 					       rs.getString("etu_contrat"),
 					       rs.getString("etu_mobilite"),
-					       rs.getInt("etu_id_promo"),
-					       rs.getInt("etu_choix_final_id"));
+					       rs.getInt("etu_choix_final_id"),
+					       rs.getInt("etu_promo"));
 			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -281,7 +277,98 @@ public int addEtudiant(Etudiant etudiant) {
 		}
 		return returnValue;
 	}
+   public  ArrayList<Etudiant> getListeClassique(){
+		// Objet  qui permet d'etablir une connexion a notre BDD
+		Connection con = null;
+		//Objet pour executer des requetes SQL
+		PreparedStatement ps = null;
+		//Objet qui permet de stocker le resultat des donnees d'une requete SQL
+		ResultSet rs = null;
+		ArrayList<Etudiant> returnValue = new ArrayList<Etudiant>();
 
+		// connexion a la base de donnees
+		try {
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("SELECT * FROM etudiant WHERE etu_statut = 'Classique' ");
+
+			// on execute la requete
+			rs = ps.executeQuery();
+			// on parcourt les lignes du resultat
+			
+			while (rs.next()) {
+				returnValue.add(new Etudiant(
+						                     rs.getString("etu_identifiant"),
+						                     rs.getString("etu_mdp"),
+						                     rs.getString("etu_statut")));
+			}
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		} finally {
+			// fermeture du rs, du preparedStatement et de la connexion
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
+   public  ArrayList<Etudiant> getListeApprenti(){
+		// Objet  qui permet d'etablir une connexion a notre BDD
+		Connection con = null;
+		//Objet pour executer des requetes SQL
+		PreparedStatement ps = null;
+		//Objet qui permet de stocker le resultat des donnees d'une requete SQL
+		ResultSet rs = null;
+		ArrayList<Etudiant> returnValue = new ArrayList<Etudiant>();
+
+		// connexion a la base de donnees
+		try {
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("SELECT * FROM etudiant  WHERE etu_statut = 'Apprenti' ");
+
+			// on execute la requete
+			rs = ps.executeQuery();
+			// on parcourt les lignes du resultat
+			
+			while (rs.next()) {
+				returnValue.add(new Etudiant(
+						                     rs.getString("etu_identifiant"),
+						                     rs.getString("etu_mdp"),
+						                     rs.getString("etu_statut")));
+			}
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		} finally {
+			// fermeture du rs, du preparedStatement et de la connexion
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
 
 }
 

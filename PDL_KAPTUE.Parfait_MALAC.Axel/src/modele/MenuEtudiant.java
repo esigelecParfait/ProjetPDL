@@ -3,10 +3,17 @@ package modele;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import dao.ChoixBDD;
+import dao.DominanteBDD;
+import gui.Choix;
+import gui.Dominante;
 
 public class MenuEtudiant extends Application{
 
@@ -82,9 +89,16 @@ public class MenuEtudiant extends Application{
 		 JButton btnNewButto = new JButton("Consulter mes choix");
 		 btnNewButto.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
-		 		frame.setVisible(false);
-		 		ConsultationChoix consul = new ConsultationChoix(idEtudiant);
-		 		consul.frame.setVisible(true);
+		 		ChoixBDD ch = new ChoixBDD();
+				DominanteBDD dom = new DominanteBDD();
+				ArrayList<Choix> choix = ch.getChoix(idEtudiant);
+				ArrayList<Dominante>dominante  = dom.getListDom();
+				StringBuilder result = new StringBuilder("Dominantes Choisies:\n");
+				
+				for(int i =0 ; i < 5 ; i++) {
+					result.append("Choix numéro " + choix.get(i).getchoixPriorite() + ", Dominante choisie : " + dominante.get(i).getNom() + "\n");
+					}
+				 JOptionPane.showMessageDialog(null, result.toString());
 		 	     
 		 	}
 		 });

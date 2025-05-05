@@ -3,15 +3,22 @@ package modele;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import dao.ChoixBDD;
+import dao.DominanteBDD;
+import gui.Choix;
+import gui.Dominante;
 
 public class MenuClass {
 
 	 JFrame frame;
-
+      String idEtudiant;
 	/**
 	 * Launch the application.
 	 */
@@ -26,6 +33,11 @@ public class MenuClass {
 				}
 			}
 		});
+	}
+	public MenuClass(String inputId) {
+		this.idEtudiant = inputId;
+		System.out.println("ID de l'étudiant connecté : " + idEtudiant);
+		initialize();
 	}
 
 	/**
@@ -54,7 +66,7 @@ public class MenuClass {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setVisible(false);
-				FenClassique fenetudiant = new FenClassique();
+				FenClassique fenetudiant = new FenClassique(idEtudiant);
                 
                 fenetudiant.frame.setVisible(true);
 				
@@ -68,7 +80,24 @@ public class MenuClass {
 		 });
 		 btnNewButton.setBounds(217, 69, 154, 41);
 		 menu.add(btnNewButton);
-		
+		 JButton btnNewButto = new JButton("Consulter mes choix");
+		 btnNewButto.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		ChoixBDD ch = new ChoixBDD();
+				DominanteBDD dom = new DominanteBDD();
+				ArrayList<Choix> choix = ch.getChoix(idEtudiant);
+				ArrayList<Dominante>dominante  = dom.getListDom();
+				StringBuilder result = new StringBuilder("Dominantes Choisies:\n");
+				
+				for(int i =0 ; i < 2 ; i++) {
+					result.append("Choix numéro " + choix.get(i).getchoixPriorite() + ", Dominante choisie : " + dominante.get(i).getNom() + "\n");
+					}
+				 JOptionPane.showMessageDialog(null, result.toString());
+		 	     
+		 	}
+		 });
+		 btnNewButto.setBounds(217, 69, 154, 41);
+		 menu.add(btnNewButto);
 		
 		 menu.add(choix);
 		return menu;

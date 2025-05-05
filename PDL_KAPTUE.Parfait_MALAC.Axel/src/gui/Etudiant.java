@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Etudiant {
 	/**
@@ -27,6 +28,8 @@ public class Etudiant {
         protected String entreprise;
         private String contrat;
         private String mobilite;
+
+		public String getDatedeNaissance;
 	   /**
 	    * Constructeur
 	    * @param nom
@@ -39,7 +42,7 @@ public class Etudiant {
 	    * @param identifiantpromo
 	    * @param choixfinal
 	    */
-	    public Etudiant(String nom, String prenom, String dateDeNaissance, int classement1A, String identifiant, String mdp,Promotion promo,int identifiantpromo,int choixfinal) {
+	    public Etudiant(String nom, String prenom, String dateDeNaissance, int classement1A, String identifiant, String mdp,Promotion promo,int choixfinal,int identifiantpromo) {
 	        this.nom = nom;
 	        this.prenom = prenom;
 	        this.dateDeNaissance = dateDeNaissance;

@@ -208,6 +208,47 @@ public class ChoixBDD extends ConnexionBDD {
 		}
 		return returnValue;
 	}
+	public int delete(String  id) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		int returnValue = 0;
+
+		// connexion a la base de donnees
+		try {
+
+			// tentative de connexion
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			// preparation de l'instruction SQL, le ? represente la valeur de l'ID
+			// a communiquer dans la suppression.
+			// le getter permet de recuperer la valeur de l'ID du fournisseur
+			ps = con.prepareStatement("DELETE FROM choix  WHERE ch_etu_id = ?");
+			ps.setString (1, id);
+
+			// Execution de la requete
+			returnValue = ps.executeUpdate();
+
+		} catch (Exception e) {
+			if (e.getMessage().contains("ORA-02292"))
+				System.out.println("");
+			else
+				e.printStackTrace();
+		} finally {
+			// fermeture du preparedStatement et de la connexion
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
 	public static void main(String[] args) throws SQLException {
 		int returnValue;
 		ChoixBDD choix = new  ChoixBDD();

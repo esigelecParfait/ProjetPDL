@@ -3,6 +3,9 @@ package modele;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +18,7 @@ import gui.Etudiant;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 
 public class AjoutEtudiant extends MenuAdministrateur {
 
@@ -98,10 +102,11 @@ public class AjoutEtudiant extends MenuAdministrateur {
 		aj.add(Prenm);
 		Prenm.setColumns(10);
 		
-		Statut = new JTextField();
-		Statut.setBounds(20, 256, 123, 19);
-		aj.add(Statut);
-		Statut.setColumns(10);
+		String[] options = {" Classique", "Apprenti"};
+        JComboBox<String> statut = new JComboBox<>(options);
+		statut.setBounds(20, 256, 96, 19);
+		aj.add(statut);
+		
 		
 		JLabel lblNewLabel_1 = new JLabel("Nom");
 		lblNewLabel_1.setBounds(10, 54, 45, 13);
@@ -175,16 +180,33 @@ public class AjoutEtudiant extends MenuAdministrateur {
 
 			@Override
 			// je dois optimiser le programme avec une boucle for qui va parcourir tous les id des etudiants
+			
 			public void actionPerformed(ActionEvent e) {
-				if(identifiant.getText().length()> 0) {
-					String id =identifiant.getText();
-					EtudiantBDD rech = new EtudiantBDD();
-					Etudiant e1 = rech.getEtudiant(id);
+				EtudiantBDD rech = new EtudiantBDD();
+				boolean vrai =false;
+				ArrayList<Etudiant> liste = rech.getListeEtudiant();
+				for ( Etudiant etudiant: liste) {
+					if(identifiant.getText().equals(etudiant.getId())== true) {
+						vrai =true;
+						break;
+					}
+				}
+
+				
+				if(identifiant.getText().length()> 0 && vrai== true) {
+				    
+					
+					Etudiant e1 = rech.getEtudiant(identifiant.getText());
 					nom.setText(e1.getNom());
 					Prenm.setText(e1.getPrenom());
-					DateNaissance.setText(e1.getDatedeNaissance());
+					String date = e1.getDatedeNaissance(); // par exemple
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					String dateStr = sdf.format(date);
+					DateNaissance.setText(dateStr); // ici monTextField est ton JTextField
+
+					
 				    Classement.setText(String.valueOf(e1.getClassement()));
-				    Statut.setText(e1.getStatut());
+				    Statut.setSelected(e1getStatut());
 				    IdPromo.setText(String.valueOf(e1.getIdentifiantPromo()));
 				    ChoixFinal.setText(String.valueOf(e1.getChoixFinal()));
 				    Entreprise.setText(e1.getContrat());
@@ -192,7 +214,7 @@ public class AjoutEtudiant extends MenuAdministrateur {
 				    Contrat.setText(e1.getEntreprise());
 					
 				}else {
-					JOptionPane.showMessageDialog(new JFrame(), "Vous devez entrer un identifiant d'etudiant", "Dialog",
+					JOptionPane.showMessageDialog(new JFrame(), "Vous devez entrer un identifiant d'etudiant valide", "Dialog",
 							JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -210,7 +232,7 @@ public class AjoutEtudiant extends MenuAdministrateur {
 				String ide =identifiant.getText();
 				EtudiantBDD  recup = new EtudiantBDD();
 				Etudiant etu =  recup.getEtudiant(ide);
-				Etudiant etudiant = new Etudiant(ide,nom.getText(),Prenm.getText(), etu.getMdp(),DateNaissance.getText(),Integer.valueOf(Classement.getText()),Statut.getText(),Entreprise.getText(),Contrat.getText(), mobilite.getText(),Integer.valueOf(IdPromo.getText()), Integer.valueOf(ChoixFinal.getText()));
+				Etudiant etudiant = new Etudiant(ide,nom.getText(),Prenm.getText(), etu.getMdp(),DateNaissance.getText(),Integer.valueOf(Classement.getText()),Statut.getText(),Entreprise.getText(),Contrat.getText(), mobilite.getText(), Integer.valueOf(ChoixFinal.getText()),Integer.valueOf(IdPromo.getText()));
 				EtudiantBDD ajout = new EtudiantBDD();
 				 int c =ajout.updateEtudiant(etudiant);
 				System.out.println(c);
