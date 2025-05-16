@@ -9,6 +9,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import gui.Etudiant;
 
 
@@ -86,13 +88,16 @@ public int updateEtudiant(Etudiant etudiant ) {
 		// a communiquer dans la modification.
 		// les getters permettent de recuperer les valeurs des attributs souhaites
 		ps = con.prepareStatement("UPDATE etudiant  set  etu_nom = ?, etu_prenom = ?, etu_mdp =?, etu_date_naissance =  ? , etu_classement = ?,etu_statut = ?, etu_entreprise = ?,etu_contrat = ?, etu_mobilite = ?,etu_choix_final_id = ?, etu_promo= ? WHERE etu_identifiant = ?");
-		
+		String dateStr = etudiant.getDatedeNaissance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date utilDate = formatter.parse(dateStr);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 		ps.setString(12, etudiant.getId());
 		ps.setString(1, etudiant.getNom());
 		ps.setString(2, etudiant.getPrenom());
 		ps.setString(3, etudiant.getMdp());
 
-		ps.setString(4, etudiant.getDatedeNaissance());
+		ps.setDate(4, sqlDate);
 		ps.setInt(5, etudiant.getClassement());
 		ps.setString(6, etudiant.getStatut());
 		ps.setString(7, etudiant.getEntreprise());
@@ -142,9 +147,9 @@ public int addEtudiant(Etudiant etudiant) {
     try {
         con = DriverManager.getConnection(URL, LOGIN, PASS);
 
-        ps = con.prepareStatement("INSERT INTO etudiant (etu_identifiant, etu_nom, etu_prenom, etu_mdp, etu_date_naissance, etu_classement, etu_statut, etu_entreprise, etu_contrat, etu_mobilite, etu_choix_final_id, etu_promo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        ps = con.prepareStatement("INSERT INTO etudiant (etu_identifiant, etu_nom, etu_prenom, etu_mdp, etu_date_naissance, etu_classement, etu_statut, etu_entreprise, etu_contrat, etu_mobilite, etu_promo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         String dateStr = etudiant.getDatedeNaissance();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date utilDate = formatter.parse(dateStr);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         ps.setString(1, etudiant.getId());
@@ -157,16 +162,20 @@ public int addEtudiant(Etudiant etudiant) {
         ps.setString(8, etudiant.getEntreprise());
         ps.setString(9, etudiant.getContrat());
         ps.setString(10, etudiant.getMobilite());
-        ps.setInt(11, etudiant.getChoixFinal());
-        ps.setInt(12, etudiant.getIdentifiantPromo());
+        
+        ps.setInt(11, etudiant.getIdentifiantPromo());
 
         returnValue = ps.executeUpdate();
 
     } catch (Exception e) {
         if (e.getMessage().contains("ORA-00001"))
-            System.out.println("Cet identifiant de fournisseur existe déjà. Ajout impossible !");
+        	JOptionPane.showMessageDialog(null, "Cet identifiant  existe déjà", "Erreur", JOptionPane.ERROR_MESSAGE);
         else
             e.printStackTrace();
+        if(e.getMessage().contains("ORA-02291"))
+			JOptionPane.showMessageDialog(null, "L'identifiant du de la promotion n'existe pas ", "Erreur", JOptionPane.ERROR_MESSAGE);
+		else
+			e.printStackTrace();
     } finally {
         try {
             if (ps != null) ps.close();
@@ -289,7 +298,7 @@ public int addEtudiant(Etudiant etudiant) {
 		// connexion a la base de donnees
 		try {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("SELECT * FROM etudiant WHERE etu_statut = 'Classique' ");
+			ps = con.prepareStatement("SELECT * FROM etudiant WHERE etu_statut = 'Classique' ORDER BY etu_classement ASC ");
 
 			// on execute la requete
 			rs = ps.executeQuery();
@@ -297,9 +306,10 @@ public int addEtudiant(Etudiant etudiant) {
 			
 			while (rs.next()) {
 				returnValue.add(new Etudiant(
-						                     rs.getString("etu_identifiant"),
-						                     rs.getString("etu_mdp"),
-						                     rs.getString("etu_statut")));
+						rs.getString("etu_identifiant"),
+	                     rs.getString("etu_mdp"),
+	                     rs.getString("etu_statut"),
+	                     rs.getInt("etu_classement")));
 			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -335,7 +345,7 @@ public int addEtudiant(Etudiant etudiant) {
 		// connexion a la base de donnees
 		try {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("SELECT * FROM etudiant  WHERE etu_statut = 'Apprenti' ");
+			ps = con.prepareStatement("SELECT * FROM etudiant  WHERE etu_statut = 'Apprenti' ORDER BY etu_classement ASC ");
 
 			// on execute la requete
 			rs = ps.executeQuery();
@@ -345,7 +355,8 @@ public int addEtudiant(Etudiant etudiant) {
 				returnValue.add(new Etudiant(
 						                     rs.getString("etu_identifiant"),
 						                     rs.getString("etu_mdp"),
-						                     rs.getString("etu_statut")));
+						                     rs.getString("etu_statut"),
+						                     rs.getInt("etu_classement")));
 			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -369,6 +380,32 @@ public int addEtudiant(Etudiant etudiant) {
 		}
 		return returnValue;
 	}
+   public static boolean update(Etudiant etu) {
+	   	Connection conn = null;
+	   	PreparedStatement ps = null;
+	   	boolean isValid = false;
+	 
+	   	try {
+	   		conn = DriverManager.getConnection(URL, LOGIN, PASS);
+	   		ps = conn.prepareStatement("UPDATE etudiant SET etu_mdp = ? where etu_identifiant = ?");
+	   		ps.setString(1, etu.getMdp());
+	   		ps.setString(2, etu.getId());
+	   		int update = ps.executeUpdate();
+	   		isValid = update > 0;
+	   		
+	   	} catch (Exception e) {
+	   		e.printStackTrace();
+	   	} finally {
+	   		try {
+	   			if (ps != null) ps.close();
+	   			if (conn != null) conn.close();
+	   		} catch (Exception ignore) {
+	   		}
+	   	}
+	   	return isValid;
+	 
+	 
+	   }
 
 }
 

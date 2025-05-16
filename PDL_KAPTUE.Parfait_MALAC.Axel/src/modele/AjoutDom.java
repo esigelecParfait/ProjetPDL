@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -84,16 +85,10 @@ public class AjoutDom {
 		domnbb.setBounds(15, 201, 112, 19);
 		dom.add(domnb);
 		dom.add(domnbb);
-		JLabel domnbA = new JLabel("Nombre de places pour les apprentis dans la dominante");
-		domnbA.setBounds(0, 240, 255, 13);
-		JTextField dominbaa = new JTextField();
-		dominbaa.setBounds(15, 274, 112, 19);
-		dom.add(domnbA);
-		dom.add(dominbaa);		
 		JLabel domdep = new JLabel("Departement  de cette  dominante");
-		domdep.setBounds(5, 315, 157, 13);
+		domdep.setBounds(5, 230, 157, 13);
 		JTextField domdepp = new JTextField();
-		domdepp.setBounds(15, 348, 112, 19);
+		domdepp.setBounds(15, 264, 112, 19);
 		dom.add(domdep);
 		dom.add(domdepp);
 		
@@ -103,11 +98,67 @@ public class AjoutDom {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DominanteBDD aj = new DominanteBDD();
-				Dominante dominante = new Dominante(Integer.valueOf(domidd.getText()),domnomm.getText(),domacrr.getText(),Integer.valueOf(domnbb.getText()),Integer.valueOf(dominbaa.getText()),Integer.valueOf(domdepp.getText()));
-				int a=aj.addDom(dominante);
-			System.out.println(a);
+			    try {
+			        String idText = domidd.getText().trim();
+			        String nom = domnomm.getText().trim();
+			        String acr = domacrr.getText().trim();
+			        String nbText = domnbb.getText().trim();
+			        String depText = domdepp.getText().trim();
+
+			        // Vérification champ par champ
+			        if (idText.isEmpty()) {
+			            JOptionPane.showMessageDialog(null, "L'identifiant ne doit pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+			        if (!idText.matches("\\d+")) {
+			            JOptionPane.showMessageDialog(null, "L'identifiant doit être un entier positif.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        if (nom.isEmpty()) {
+			            JOptionPane.showMessageDialog(null, "Le nom ne doit pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        if (acr.isEmpty()) {
+			            JOptionPane.showMessageDialog(null, "L'acronyme ne doit pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        if (nbText.isEmpty()) {
+			            JOptionPane.showMessageDialog(null, "Le nombre d'étudiants ne doit pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+			        if (!nbText.matches("\\d+")) {
+			            JOptionPane.showMessageDialog(null, "Le nombre d'étudiants doit être un entier positif.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        if (depText.isEmpty()) {
+			            JOptionPane.showMessageDialog(null, "Le département ne doit pas être vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+			        if (!depText.matches("\\d+")) {
+			            JOptionPane.showMessageDialog(null, "Le département doit être un entier positif.", "Erreur", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        // Tous les champs sont valides, on peut créer l’objet
+			        int id = Integer.parseInt(idText);
+			        int nb = Integer.parseInt(nbText);
+			        int dep = Integer.parseInt(depText);
+
+			        Dominante dominante = new Dominante(id, nom, acr, nb, dep);
+			        DominanteBDD aj = new DominanteBDD();
+			        int a = aj.addDom(dominante);
+			        
+			    }
+			    catch (Exception ex) {
+			    	ex.printStackTrace();
+			    }
+			    
 			}
+
 			
 		});
 		dom.add(ajout);

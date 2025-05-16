@@ -3,6 +3,8 @@ package modele;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -22,6 +24,12 @@ import gui.Dominante;
 public class MenuAdministrateur {
 
 	 JFrame frame;
+	 private static final String DATE_OUVERTURE_STR = "2025-05-15T08:00";
+	  private static final String DATE_FERMETURE_STR = "2025-05-17T08:00";
+	  private static final LocalDateTime DATE_OUVERTURE =
+	            LocalDateTime.parse(DATE_OUVERTURE_STR, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+	    private static final LocalDateTime DATE_FERMETURE =
+	            LocalDateTime.parse(DATE_FERMETURE_STR, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
 	/**
 	 * Launch the application.
@@ -133,20 +141,26 @@ public class MenuAdministrateur {
 				for(int i=0 ; i< m ; i++) {
 					//Je recupere l id d un etudiant aleatoire 
 					String id=classique.get(i).getId();
+					//System.out.println(id);
 					//je recupere son classement 
-					int cla = classique.get(i).getClassement();
-				
+					int cla=0;
+					cla = classique.get(i).getClassement();
+				   // System.out.println(cla);
 					//Je stocke tous ses choix 
 					ArrayList <Choix>stocker = stock.getChoix(id);
 					//je remplis ma matrice avec les choix de chaque etudiant
-					
+					if(stocker.size()>=5) {
 					for(int j=0 ; j< 5; j++) {
 						tab[cla-1][j]= stocker.get(j).getdomId();
 					}
-					
+					}
 				}
 				for (int i = 0 ; i < m ; i++) {
 					String id = classique.get(i).getId();
+					System.out.println(id);
+					Etudiant etudian = recupetu.getEtudiant(id);
+					ArrayList <Choix>stocker = stock.getChoix(id);
+					if(stocker.size()==5) {
 					for (int p= 0; p< 5 ; p++) {
 						// je recupere la dominante du choix p de mon etudiant i
 						Dominante dom = recupdom.getDom(tab[i][p]);
@@ -154,7 +168,7 @@ public class MenuAdministrateur {
 						int g= tab[i][p];
 						if(dom != null && dom.getNbPlaces() != 0) {
 							//Je recupere mon etudiant dans la base de donnees
-							Etudiant etudian = recupetu.getEtudiant(id);
+							
 							//J'attribue a mon etudiant un choix final
 							int b=0;
 							etudian.setChoix(g);
@@ -165,15 +179,44 @@ public class MenuAdministrateur {
 							    
 							}
 							//Je recupere la dominante qu on a affecté mon etudiant
-							Dominante supDom = recupdom.getDom(f);
+							Dominante supDom = recupdom.getDom(g);
 							int nb = (supDom.getNbPlaces() )-1;
-							Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getNbPlacesApprenti(),supDom.getDepartement());
+							Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getDepartement());
 							int z = recupdom.updateNbPlaces(suppeDom);
-							
+							break;
 						}
-						
+					}
 						
 					}
+				}
+				for(int i =0 ; i < m ; i++) {
+					String id = classique.get(i).getId();
+					System.out.println(id);
+					ArrayList <Choix>stocker = stock.getChoix(id);
+					ArrayList<Dominante> dom = recupdom.getListDom();
+					Etudiant etudian = recupetu.getEtudiant(id);
+					if(stocker.size()!=5) {
+						for (int j = 0 ; j < dom.size(); j++) {
+							if(dom.get(j).getNbPlaces()!=0) {
+					              int idDom = dom.get(j).getidDom();
+								etudian.setChoix(idDom);
+								int f = recupetu.updateEtuPlaces(etudian);
+								
+								if (f > 0) { // Vérifie si la mise à jour a réussi
+								    System.out.println("Étudiant " + id + " affecté à la dominante " + idDom);
+								    
+								}
+								//Je recupere la dominante qu on a affecté mon etudiant
+								Dominante supDom = recupdom.getDom(idDom);
+								int nb = (supDom.getNbPlaces() )-1;
+								Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getDepartement());
+								int z = recupdom.updateNbPlaces(suppeDom);
+								break;
+							}
+						}
+						
+					}
+					
 				}
 				
 				
@@ -212,20 +255,29 @@ public class MenuAdministrateur {
 				for(int i=0 ; i< m ; i++) {
 					//Je recupere l id d un etudiant aleatoire 
 					String id=apprenti.get(i).getId();
+					//System.out.println(id);
 					//je recupere son classement 
-					int cla = apprenti.get(i).getClassement();
-				
+					int cla =0;
+					cla = apprenti.get(i).getClassement();
+				    //System.out.println(cla);
 					//Je stocke tous ses choix 
 					ArrayList <Choix>stocker = stock.getChoix(id);
 					//je remplis ma matrice avec les choix de chaque etudiant
+					if (stocker.size()>=2) {
+						
 					
 					for(int j=0 ; j< 2; j++) {
 						tab[cla-1][j]= stocker.get(j).getdomId();
 					}
-					
+					}
 				}
 				for(int i = 0 ; i < m ; i++) {
 					String id = apprenti.get(i).getId();// je recupere l id de l etudiant 
+					System.out.println(id);
+					ArrayList <Choix>stocker = stock.getChoix(id);
+					if(stocker.size()==2) {
+						
+					
 					for (int p= 0; p< 2 ; p++) {
 
 						Dominante dom = recupdom.getDom(tab[i][p]);// je recupere la dominante du choix p de mon etudiant i
@@ -248,20 +300,57 @@ public class MenuAdministrateur {
 							Dominante supDom = recupdom.getDom(g);
 							int nb = (supDom.getNbPlaces())-1;
 							//Je retire une place dans la c=dominante choisie
-							Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getNbPlacesApprenti(),supDom.getDepartement());
+							Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getDepartement());
 							 recupdom.updateNbPlaces(suppeDom);
-							
+							break;
 						}
-						
+					}
 						
 					}
 				}
-				
+				for(int i =0 ; i < m ; i++) {
+					String id = apprenti.get(i).getId();
+					System.out.println(id);
+					ArrayList <Choix>stocker = stock.getChoix(id);
+					ArrayList<Dominante> dom = recupdom.getListDom();
+					Etudiant etudian = recupetu.getEtudiant(id);
+					if(stocker.size()!=2) {
+						for (int j = 0 ; j < dom.size(); j++) {
+							if(dom.get(j).getNbPlaces()!=0) {
+					              int idDom = dom.get(j).getidDom();
+								etudian.setChoix(idDom);
+								int f = recupetu.updateEtuPlaces(etudian);
+								
+								if (f > 0) { // Vérifie si la mise à jour a réussi
+								    System.out.println("Étudiant " + id + " affecté à la dominante " + idDom);
+								    
+								}
+								//Je recupere la dominante qu on a affecté mon etudiant
+								Dominante supDom = recupdom.getDom(idDom);
+								int nb = (supDom.getNbPlaces() )-1;
+								Dominante suppeDom = new Dominante(supDom.getidDom(),supDom.getNom(),supDom.getAcronyme(),nb,supDom.getDepartement());
+								int z = recupdom.updateNbPlaces(suppeDom);
+								break;
+							}
+						}
+						
+					}
+					
+				}
 				
 				JOptionPane.showMessageDialog(null, "Attribution des dominantes terminée !");
 			}
 			
 		});
+		JButton btnNewButton = new JButton("Gérer le calendrier");
+		 btnNewButton.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		frame.setVisible(false);
+		 		Calendrier calendrier = new Calendrier();
+		 		calendrier.frame.setVisible(true);
+		 		}
+		 });
+	 menu.add(btnNewButton);
 		menu.add(fina);
 		menu.add(finale);
 		menu.add(ajou);

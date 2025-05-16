@@ -241,6 +241,32 @@ try {
 
 return returnValue;
 }
+ public static boolean update(Etudiant etu) {
+	   	Connection conn = null;
+	   	PreparedStatement ps = null;
+	   	boolean isValid = false;
+	 
+	   	try {
+	   		conn = DriverManager.getConnection(URL, LOGIN, PASS);
+	   		ps = conn.prepareStatement("UPDATE admin SET ad_mdp = ? where ad_id = ?");
+	   		ps.setString(1, etu.getMdp());
+	   		ps.setString(2, etu.getId());
+	   		int update = ps.executeUpdate();
+	   		isValid = update > 0;
+	   		
+	   	} catch (Exception e) {
+	   		e.printStackTrace();
+	   	} finally {
+	   		try {
+	   			if (ps != null) ps.close();
+	   			if (conn != null) conn.close();
+	   		} catch (Exception ignore) {
+	   		}
+	   	}
+	   	return isValid;
+	 
+	 
+	   }
 
 
 public static void main(String[] args) throws SQLException {

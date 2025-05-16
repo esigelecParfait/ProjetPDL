@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import gui.Dominante;
 import gui.Etudiant;
 
@@ -48,7 +50,7 @@ public class DominanteBDD extends ConnexionBDD{
 
 			      while (rs.next()) {  
 			    	  
-			    	  returnValue.add(new Dominante(rs.getInt("dom_id"),rs.getString("dom_nom"),rs.getString("dom_accronyme")  ,rs.getInt("dom_nb_places"), rs.getInt("dom_nb_places_apprentis"),rs.getInt("dom_departement_id"))); 
+			    	  returnValue.add(new Dominante(rs.getInt("dom_id"),rs.getString("dom_nom"),rs.getString("dom_accronyme")  ,rs.getInt("dom_nb_places"),rs.getInt("dom_departement_id"))); 
 } 
 
 	} catch (Exception ee) {  
@@ -114,7 +116,7 @@ public class DominanteBDD extends ConnexionBDD{
 						       rs.getString("dom_nom"),
 						       rs.getString("dom_accronyme"),
 						       rs.getInt("dom_nb_places"),
-						       rs.getInt("dom_nb_places_apprentis"),
+						    
 						       rs.getInt("dom_departement_id"));
 				}
 			} catch (Exception ee) {
@@ -160,22 +162,26 @@ public class DominanteBDD extends ConnexionBDD{
 				// preparation de l'instruction SQL, chaque ? represente une valeur
 				// a communiquer dans l'insertion.
 				// les getters permettent de recuperer les valeurs des attributs souhaites
-				ps = con.prepareStatement("INSERT INTO dominante(dom_id, dom_nom, dom_accronyme, dom_nb_places,dom_nb_places_apprentis,dom_departement_id) VALUES(?, ?, ?, ?,?,?)");
+				ps = con.prepareStatement("INSERT INTO dominante(dom_id, dom_nom, dom_accronyme, dom_nb_places,dom_departement_id) VALUES(?, ?, ?,?,?)");
 				ps.setInt(1, dom.getidDom());
 				ps.setString(2, dom.getNom());
 				
 				ps.setString(3, dom.getAcronyme());
-				
 				ps.setInt(4, dom.getNbPlaces());
-				ps.setInt(5, dom.getNbPlacesApprenti());
-				ps.setInt(6, dom.getDepartement());
+				
+				
+				ps.setInt(5, dom.getDepartement());
 
 				// Execution de la requete
 				returnValue = ps.executeUpdate();
 
 			} catch (Exception e) {
 				if (e.getMessage().contains("ORA-00001"))
-					System.out.println("Cette dominance existe deja !");
+					JOptionPane.showMessageDialog(null, "Cet identifiant existe déjà", "Erreur", JOptionPane.ERROR_MESSAGE);
+				else
+					e.printStackTrace();
+				if(e.getMessage().contains("ORA-02291"))
+					JOptionPane.showMessageDialog(null, "L'identifiant du département n'existe pas", "Erreur", JOptionPane.ERROR_MESSAGE);
 				else
 					e.printStackTrace();
 			} finally {

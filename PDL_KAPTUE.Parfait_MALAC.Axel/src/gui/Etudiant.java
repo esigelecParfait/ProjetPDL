@@ -69,15 +69,38 @@ public class Etudiant {
 	    	this.mobilite = mobilite;
 	    	this.choixfinal = choixfinal;
 	    }
+	    public Etudiant(String identifiant,String nom, String prenom,String mdp, String dateDeNaissance,int classement1A,String statut,String contrat,String entreprise,String mobilite,int identifiantpromo) {
+	    	this.identifiant= identifiant;
+	    	this.nom= nom;
+	    	this.prenom= prenom;
+	    	this.mdp = mdp;
+	    	this.dateDeNaissance= dateDeNaissance;
+	    	this.classement1A = classement1A;
+	    	this.statut = statut;
+	    	this.contrat= contrat;
+	    	this.entreprise = entreprise;
+	    	this.identifiantpromo= identifiantpromo;
+	    	this.mobilite = mobilite;
+	    	this.choixfinal = choixfinal;
+	    }
 	    public String getMobilite() {
 	    	return mobilite;
 	    }
-	    
-	    public Etudiant(String identifiant, String mdp , String statut) {
+public Etudiant(String identifiant, String mdp , String statut) {
 	        
 	        this.identifiant = identifiant;
 	        this.mdp = mdp;
 	        this.statut = statut;
+	        
+	        
+	    }
+	    
+	    public Etudiant(String identifiant, String mdp , String statut,int classement1A) {
+	        
+	        this.identifiant = identifiant;
+	        this.mdp = mdp;
+	        this.statut = statut;
+	        this.classement1A= classement1A;
 	        
 	    }
 	    public String getEntreprise() {

@@ -1,7 +1,7 @@
 package modele;
 
 import java.awt.EventQueue;
-import java.awt.GridLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,7 +17,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import dao.AdministrateurBDD;
-import dao.ConnexionBDD;
+
 import dao.EtudiantBDD;
 import gui.Administrateur;
 import gui.Etudiant;
@@ -26,7 +26,7 @@ import java.awt.Cursor;
 
 public class Application {
 
-	private JFrame frame;
+	 JFrame frame;
 	protected String idEtudiant;
 	public String getIdEtudiant() {
 		return idEtudiant;
@@ -100,7 +100,8 @@ public class Application {
     	oublie.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
             	JOptionPane.showMessageDialog(null, "Mot de passe oublie");
-                 new FenMdpOublie();
+                 FenMdpOublie mdp = new FenMdpOublie();
+                 mdp.frame.setVisible(true);
                  
             }
         });

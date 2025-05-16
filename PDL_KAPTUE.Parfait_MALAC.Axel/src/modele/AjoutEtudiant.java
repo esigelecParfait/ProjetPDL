@@ -4,12 +4,16 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
+
+import com.toedter.calendar.JDateChooser;
 
 import dao.ConnexionBDD;
 import dao.EtudiantBDD;
@@ -19,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 
 public class AjoutEtudiant extends MenuAdministrateur {
 
@@ -72,7 +77,9 @@ public class AjoutEtudiant extends MenuAdministrateur {
 	private JPanel CreateAddPanel() {
 		JPanel aj = new JPanel();
 		aj.setLayout(null);
-		
+		JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setBounds(20, 146, 123, 19);
+        aj.add(dateChooser);
 		nom = new JTextField();
 		nom.setBounds(20, 66, 123, 19);
 		aj.add(nom);
@@ -87,10 +94,7 @@ public class AjoutEtudiant extends MenuAdministrateur {
 		lblNewLabel.setBounds(10, 10, 133, 13);
 		aj.add(lblNewLabel);
 		
-		DateNaissance = new JTextField();
-		DateNaissance.setBounds(20, 146, 123, 19);
-		aj.add(DateNaissance);
-		DateNaissance.setColumns(10);
+		
 		
 		Classement = new JTextField();
 		Classement.setBounds(20, 192, 123, 19);
@@ -102,10 +106,10 @@ public class AjoutEtudiant extends MenuAdministrateur {
 		aj.add(Prenm);
 		Prenm.setColumns(10);
 		
-		String[] options = {" Classique", "Apprenti"};
-        JComboBox<String> statut = new JComboBox<>(options);
-		statut.setBounds(20, 256, 96, 19);
-		aj.add(statut);
+		
+        JTextField Statut = new JTextField();;
+		Statut.setBounds(20, 256, 96, 19);
+		aj.add(Statut);
 		
 		
 		JLabel lblNewLabel_1 = new JLabel("Nom");
@@ -136,11 +140,11 @@ public class AjoutEtudiant extends MenuAdministrateur {
 		lblNewLabel_7.setBounds(171, 10, 45, 13);
 		aj.add(lblNewLabel_7);
 		
-		JLabel lblNewLabel_8 = new JLabel("Choix Final");
+		JLabel lblNewLabel_8 = new JLabel("ID Promo");
 		lblNewLabel_8.setBounds(158, 181, 45, 13);
 		aj.add(lblNewLabel_8);
 		
-		JLabel lblNewLabel_9 = new JLabel("Id Promo\r\n");
+		JLabel lblNewLabel_9 = new JLabel("	Choix Final");
 		lblNewLabel_9.setBounds(158, 120, 45, 13);
 		aj.add(lblNewLabel_9);
 		
@@ -172,7 +176,7 @@ public class AjoutEtudiant extends MenuAdministrateur {
 		ChoixFinal.setBounds(158, 204, 96, 19);
 		aj.add(ChoixFinal);
 		ChoixFinal.setColumns(10);
-		
+	
 		JButton btnNewButton = new JButton("Rechercher\r\n");
 		btnNewButton.setBounds(368, 270, 85, 21);
 		btnNewButton.addActionListener(new ActionListener() {
@@ -199,16 +203,20 @@ public class AjoutEtudiant extends MenuAdministrateur {
 					Etudiant e1 = rech.getEtudiant(identifiant.getText());
 					nom.setText(e1.getNom());
 					Prenm.setText(e1.getPrenom());
-					String date = e1.getDatedeNaissance(); // par exemple
+					String dateStr = e1.getDatedeNaissance(); // Ex: "2004-05-16"
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					String dateStr = sdf.format(date);
-					DateNaissance.setText(dateStr); // ici monTextField est ton JTextField
+					try {
+					    java.util.Date date = sdf.parse(dateStr); // Conversion en java.util.Date
+					    dateChooser.setDate(date);     // jDateChooser est ton composant calendrier
+					} catch (ParseException ex) {
+					    ex.printStackTrace();
+					}
 
 					
 				    Classement.setText(String.valueOf(e1.getClassement()));
-				    Statut.setSelected(e1getStatut());
+				    Statut.setText(e1.getStatut());
 				    IdPromo.setText(String.valueOf(e1.getIdentifiantPromo()));
-				    ChoixFinal.setText(String.valueOf(e1.getChoixFinal()));
+				   ChoixFinal.setText(String.valueOf(e1.getChoixFinal()));
 				    Entreprise.setText(e1.getContrat());
 				    mobilite.setText(e1.getMobilite());
 				    Contrat.setText(e1.getEntreprise());
@@ -229,13 +237,24 @@ public class AjoutEtudiant extends MenuAdministrateur {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+					
+				
 				String ide =identifiant.getText();
 				EtudiantBDD  recup = new EtudiantBDD();
+				java.util.Date selectedDate = dateChooser.getDate();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String dateStr = sdf.format(selectedDate);
 				Etudiant etu =  recup.getEtudiant(ide);
-				Etudiant etudiant = new Etudiant(ide,nom.getText(),Prenm.getText(), etu.getMdp(),DateNaissance.getText(),Integer.valueOf(Classement.getText()),Statut.getText(),Entreprise.getText(),Contrat.getText(), mobilite.getText(), Integer.valueOf(ChoixFinal.getText()),Integer.valueOf(IdPromo.getText()));
+				Etudiant etudiant = new Etudiant(ide,nom.getText(),Prenm.getText(), etu.getMdp(),dateStr,Integer.valueOf(Classement.getText()),Statut.getText(),Entreprise.getText(),Contrat.getText(), mobilite.getText(), Integer.valueOf(ChoixFinal.getText()),Integer.valueOf(IdPromo.getText()));
 				EtudiantBDD ajout = new EtudiantBDD();
 				 int c =ajout.updateEtudiant(etudiant);
 				System.out.println(c);
+			
+			
+				
+				
 			}
 			
 		});
