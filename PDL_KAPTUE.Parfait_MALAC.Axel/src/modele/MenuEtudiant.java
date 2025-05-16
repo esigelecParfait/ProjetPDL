@@ -112,6 +112,7 @@ public class MenuEtudiant extends Application{
 		 btnNewButton.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		
+		 		
 		 	}
 		 });
 		 btnNewButton.setBounds(217, 69, 154, 41);
